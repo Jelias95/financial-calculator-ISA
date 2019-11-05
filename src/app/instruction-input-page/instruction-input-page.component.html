@@ -1,0 +1,35 @@
+<div class="parent-container" fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="10px"
+  fxLayoutGap.xs="0">
+
+  <div class="left-container" fxFlex="75%" fxLayout="column" fxLayoutAlign="center" fxLayoutGap="10px"
+    fxLayoutGap.xs="0">
+
+    <div class="instructions-container">
+      <mat-card fxLayout="column">
+        <mat-form-field appearance="outline">
+          <mat-label>Input Instructions</mat-label>
+          <textarea matInput matTextareaAutosize matAutosizeMinRows="5" id="instructionList"></textarea>
+        </mat-form-field>
+        <button mat-raised-button (click)="parseTextarea()">Submit Instructions</button>
+        <button mat-raised-button routerLink="/instruction-set">Check Available Instructions</button>
+      </mat-card>
+    </div>
+
+    <div class="opcode-container">
+      <mat-card>
+        <mat-form-field>
+          <input matInput placeholder="opcodes">
+        </mat-form-field>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="right-container" fxFlex>
+    <mat-card>
+      <mat-form-field *ngFor='let register of availableRegisters' appearance='outline'>
+        <input matInput id="{{ register }}" class="register-display-input" disabled>
+        <span matPrefix> {{ register }}: </span>
+      </mat-form-field>
+    </mat-card>
+  </div>
+</div>
