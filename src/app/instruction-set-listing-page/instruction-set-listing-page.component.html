@@ -2,7 +2,7 @@
   <button mat-raised-button routerLink="/instruction-input">Input Instructions</button>
   <mat-list>
     <mat-list-item *ngFor="let instruction of sortCommands()">
-      <h3 matLine> {{ instruction.command }} </h3>
+      <h3 matLine> {{ instruction.command }} <span class="opcode">(Opcode: {{ instruction.opcode }})</span> </h3>
       <h4 matLine> {{ instruction.description }} </h4>
       <p matLine> {{ instruction.example }} </p>
       <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
