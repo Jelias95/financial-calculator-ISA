@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InstructionDetail } from '../shared/models/instruction-detail.model';
+import { RegisterDetail } from '../shared/models/register-detail.model';
 
 @Component({
   selector: 'app-instruction-input-page',
@@ -8,7 +9,8 @@ import { InstructionDetail } from '../shared/models/instruction-detail.model';
 })
 export class InstructionInputPageComponent implements OnInit {
   possibleInstructions: Array<InstructionDetail>;
-  availableRegisters: Array<string> = ['$P1', '$P2', '$P3', '$N1', '$N2', '$N3', '$D1', '$D2', '$D3'];
+  registers: Array<RegisterDetail>;
+  machineInstructionDisplay: string;
 
   constructor() { }
 
@@ -93,6 +95,44 @@ export class InstructionInputPageComponent implements OnInit {
         opcode: this.generateOpcode('SPI')
       }
     ];
+    this.registers = [
+      {
+        displayName: 'CUR1',
+        machineName: 'C1'
+      },
+      {
+        displayName: 'CUR2',
+        machineName: 'C2'
+      },
+      {
+        displayName: 'CUR3',
+        machineName: 'C2'
+      },
+      {
+        displayName: 'NUM1',
+        machineName: 'N1'
+      },
+      {
+        displayName: 'NUM2',
+        machineName: 'N2'
+      },
+      {
+        displayName: 'NUM3',
+        machineName: 'N3'
+      },
+      {
+        displayName: 'PER1',
+        machineName: 'P1'
+      },
+      {
+        displayName: 'PER2',
+        machineName: 'P2'
+      },
+      {
+        displayName: 'PER3',
+        machineName: 'P3'
+      }
+    ];
   }
 
   generateOpcode(command: string): string {
@@ -106,61 +146,92 @@ export class InstructionInputPageComponent implements OnInit {
     return opcode;
   }
 
-  parseTextarea() {
-    const instructionList: Array<string> = (document.getElementById('instructionList') as HTMLInputElement).value.split('\n');
-    this.parseInstructionList(instructionList);
+  convertDecimalToHex(decimal: number): string {
+    let hexNumber = decimal.toString(16).toUpperCase();
+    hexNumber = '0x' + hexNumber;
+    return hexNumber;
   }
 
-  parseInstructionList(instructionList: Array<string>) {
-    for (const instruction of instructionList) {
-      const parsedInstruction: Array<string> = instruction.valueOf().split(', ');
+  submitInstructionSet() {
+    const instructionSet: Array<string> = (document.getElementById('instructionList') as HTMLInputElement).value.split('\n');
+    this.parseInstructionSet(instructionSet);
+    this.translateInstructionSet(instructionSet);
+  }
+
+  translateInstructionSet(instructionSet: Array<string>) {
+    this.machineInstructionDisplay = '';
+    for (const instruction of instructionSet) {
+      const parsedInstruction: Array<string> = instruction.valueOf().split(',');
+      const command = parsedInstruction[0].trim().toUpperCase();
+      const opcodeIndex = this.possibleInstructions.map((inst) => inst.command).indexOf(command);
+      this.machineInstructionDisplay = this.machineInstructionDisplay + this.possibleInstructions[opcodeIndex].opcode + ', ';
+      for (let i = 1; i < parsedInstruction.length; i++) {
+        if (this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[i].trim().toUpperCase()) !== -1) {
+          const machineNameIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[i].trim().toUpperCase());
+          this.machineInstructionDisplay = this.machineInstructionDisplay + this.registers[machineNameIndex].machineName;
+        } else {
+        this.machineInstructionDisplay =
+          this.machineInstructionDisplay + this.convertDecimalToHex(parseInt(parsedInstruction[i].trim(), 10));
+        }
+        if (i < parsedInstruction.length - 1) {
+          this.machineInstructionDisplay = this.machineInstructionDisplay + ', ';
+        }
+      }
+      this.machineInstructionDisplay = this.machineInstructionDisplay + '\n';
+      (document.getElementById('instructionResult') as HTMLInputElement).value = this.machineInstructionDisplay;
+    }
+  }
+
+  parseInstructionSet(instructionSet: Array<string>) {
+    for (const instruction of instructionSet) {
+      const parsedInstruction: Array<string> = instruction.valueOf().split(',');
       const command = parsedInstruction[0].trim().toUpperCase();
       switch (command) {
-        case 'FVI' :{
+        case 'FVI': {
           this.futureValueImmediate(parsedInstruction);
           break;
         }
-        case 'FVR' : {
+        case 'FVR': {
           this.futureValueWithRegister(parsedInstruction);
           break;
         }
-        case 'IPPI' : {
+        case 'IPPI': {
           console.log('IPPI');
           break;
         }
-        case 'IPPR' : {
+        case 'IPPR': {
           console.log('IPPR');
           break;
         }
-        case 'NPI' : {
+        case 'NPI': {
           console.log('NPI');
           break;
         }
-        case 'NPR' : {
+        case 'NPR': {
           console.log('NPR');
           break;
         }
-        case 'PMTI' : {
+        case 'PMTI': {
           console.log('PMTI');
           break;
         }
-        case 'PMTR' : {
+        case 'PMTR': {
           console.log('PMTR');
           break;
         }
-        case 'SPI' : {
+        case 'SPI': {
           console.log('SPI');
           break;
         }
-        case 'SPR' : {
+        case 'SPR': {
           console.log('SPR');
           break;
         }
-        case 'SV' : {
+        case 'SV': {
           console.log('SV');
           break;
         }
-        default : {
+        default: {
           console.log('OOPS! Wrong Command!');
           break;
         }
@@ -168,8 +239,7 @@ export class InstructionInputPageComponent implements OnInit {
     }
   }
 
-  futureValueImmediate(parsedInstruction: Array<string>) {}
+  futureValueImmediate(parsedInstruction: Array<string>) { }
 
-  futureValueWithRegister(parsedInstruction: Array<string>) {
-  }
+  futureValueWithRegister(parsedInstruction: Array<string>) { }
 }

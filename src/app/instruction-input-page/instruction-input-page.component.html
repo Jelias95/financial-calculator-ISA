@@ -1,24 +1,49 @@
-<div class="parent-container" fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="10px"
-  fxLayoutGap.xs="0">
-
-  <div class="left-container" fxFlex="75%" fxLayout="column" fxLayoutAlign="center" fxLayoutGap="10px"
-    fxLayoutGap.xs="0">
-
-    <div class="instructions-container">
+<div
+  class="parent-container"
+  fxLayout
+  fxLayout.xs="column"
+  fxLayoutAlign="center"
+  fxLayoutGap="10px"
+  fxLayoutGap.xs="0"
+>
+  <div
+    class="left-container"
+    fxFlex="75%"
+    fxLayout="column"
+    fxLayoutAlign="center"
+    fxLayoutGap="10px"
+    fxLayoutGap.xs="0"
+  >
+    <div class="instructions-input-container">
       <mat-card fxLayout="column">
+        <h2>Input Instructions</h2>
         <mat-form-field appearance="outline">
           <mat-label>Input Instructions</mat-label>
-          <textarea matInput matTextareaAutosize matAutosizeMinRows="5" id="instructionList"></textarea>
+          <textarea
+            matInput
+            matTextareaAutosize
+            matAutosizeMinRows="5"
+            id="instructionList"
+          ></textarea>
         </mat-form-field>
-        <button mat-raised-button (click)="parseTextarea()">Submit Instructions</button>
-        <button mat-raised-button routerLink="/instruction-set">Check Available Instructions</button>
+        <button mat-raised-button (click)="submitInstructionSet()">Execute Instructions</button>
+        <button mat-raised-button routerLink="/instruction-set">
+          Check Available Instructions
+        </button>
       </mat-card>
     </div>
 
-    <div class="opcode-container">
-      <mat-card>
-        <mat-form-field>
-          <input matInput placeholder="opcodes">
+    <div class="instruction-result-container">
+      <mat-card fxLayout="column">
+        <h2>Instruction Results</h2>
+        <mat-form-field appearance="outline">
+          <mat-label>Instruction Results</mat-label>
+          <textarea
+            matInput
+            matTextareaAutosize
+            matAutosizeMinRows="5"
+            id="instructionResult"
+          ></textarea>
         </mat-form-field>
       </mat-card>
     </div>
@@ -26,9 +51,10 @@
 
   <div class="right-container" fxFlex>
     <mat-card>
-      <mat-form-field *ngFor='let register of availableRegisters' appearance='outline'>
-        <input matInput id="{{ register }}" class="register-display-input" disabled>
-        <span matPrefix> {{ register }}: </span>
+      <h2>Registers</h2>
+      <mat-form-field *ngFor="let register of registers" appearance="outline">
+        <input matInput id="{{ register.machineName }}" class="register-display-container" disabled />
+        <span matPrefix> {{ register.displayName }}: </span>
       </mat-form-field>
     </mat-card>
   </div>
