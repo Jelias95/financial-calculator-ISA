@@ -35,28 +35,16 @@ export class InstructionInputPageComponent implements OnInit {
         opcode: this.generateOpcode('FVI')
       },
       {
-        command: 'PMTRB',
-        description: 'Calculate number of payments at beginning of period to achieve future value using registers',
-        example: 'PMTRB, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTRB')
+        command: 'PMTR',
+        description: 'Calculate amount of payments to pay off future value using registers',
+        example: 'PMTR, storage register, future value, # of periods, interest per period;',
+        opcode: this.generateOpcode('PMTR')
       },
       {
-        command: 'PMTIB',
-        description: 'Calculate number of payments at beginning of period to achieve future value using immediate values',
-        example: 'PMTIB, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTIB')
-      },
-      {
-        command: 'PMTRE',
-        description: 'Calculate number of payments at end of period to achieve future value using registers',
-        example: 'PMTRE, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTRE')
-      },
-      {
-        command: 'PMTIE',
-        description: 'Calculate number of payments at end of period to achieve future value using immediate values',
-        example: 'PMTIE, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTIE')
+        command: 'PMTI',
+        description: 'Calculate amount of payments to pay off future value using immediate values',
+        example: 'PMTI, storage register, future value, # of periods, interest per period;',
+        opcode: this.generateOpcode('PMTI')
       },
       {
         command: 'IPPR',
@@ -192,7 +180,7 @@ export class InstructionInputPageComponent implements OnInit {
           break;
         }
         case 'FVR': {
-          this.futureValueWithRegister(parsedInstruction);
+          this.futureValueRegister(parsedInstruction);
           break;
         }
         case 'IPPI': {
@@ -212,11 +200,11 @@ export class InstructionInputPageComponent implements OnInit {
           break;
         }
         case 'PMTI': {
-          console.log('PMTI');
+          this.paymentsImmediate(parsedInstruction);
           break;
         }
         case 'PMTR': {
-          console.log('PMTR');
+          this.paymentsRegister(parsedInstruction);
           break;
         }
         case 'SPI': {
@@ -259,7 +247,7 @@ export class InstructionInputPageComponent implements OnInit {
     (document.getElementById(storageRegister) as HTMLInputElement).value = futureValue.toFixed(2);
   }
 
-  futureValueWithRegister(parsedInstruction: Array<string>) {
+  futureValueRegister(parsedInstruction: Array<string>) {
     const storageRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[1].trim().toUpperCase());
     const storageRegister = this.registers[storageRegisterIndex].machineName;
 
@@ -299,15 +287,15 @@ export class InstructionInputPageComponent implements OnInit {
 
     const futureValueRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[2].trim().toUpperCase());
     const futureValueRegister = this.registers[futureValueRegisterIndex].machineName;
-    const futureValue = Number(futureValueRegister);
+    const futureValue = Number((document.getElementById(futureValueRegister) as HTMLInputElement).value);
 
     const periodsRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[3].trim().toUpperCase());
     const periodsRegister = this.registers[periodsRegisterIndex].machineName;
-    const periods = Number(periodsRegister);
+    const periods = Number((document.getElementById(periodsRegister) as HTMLInputElement).value);
 
     const startingPrincipalRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[4].trim().toUpperCase());
     const startingPrincipalRegister = this.registers[startingPrincipalRegisterIndex].machineName;
-    const startingPrincipal = Number(startingPrincipalRegister);
+    const startingPrincipal = Number((document.getElementById(startingPrincipalRegister) as HTMLInputElement).value);
 
     const interestRatePerPeriod = (Math.pow((futureValue / startingPrincipal), (1 / periods)) - 1) * 100;
     (document.getElementById(storageRegister) as HTMLInputElement).value = interestRatePerPeriod.toFixed(2);
@@ -333,15 +321,15 @@ export class InstructionInputPageComponent implements OnInit {
 
     const futureValueRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[2].trim().toUpperCase());
     const futureValueRegister = this.registers[futureValueRegisterIndex].machineName;
-    const futureValue = Number(futureValueRegister);
+    const futureValue = Number((document.getElementById(futureValueRegister) as HTMLInputElement).value);
 
     const startingPrincipalRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[3].trim().toUpperCase());
     const startingPrincipalRegister = this.registers[startingPrincipalRegisterIndex].machineName;
-    const startingPrincipal = Number(startingPrincipalRegister);
+    const startingPrincipal = Number((document.getElementById(startingPrincipalRegister) as HTMLInputElement).value);
 
     const interestRateRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[4].trim().toUpperCase());
     const interestRateRegister = this.registers[interestRateRegisterIndex].machineName;
-    const interestRate = Number(interestRateRegister);
+    const interestRate = Number((document.getElementById(interestRateRegister) as HTMLInputElement).value) / 100;
 
     const numberOfPeriods = Math.log(futureValue / startingPrincipal) / Math.log(interestRate);
     (document.getElementById(storageRegister) as HTMLInputElement).value = numberOfPeriods.toFixed(2);
@@ -367,17 +355,51 @@ export class InstructionInputPageComponent implements OnInit {
 
     const futureValueRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[2].trim().toUpperCase());
     const futureValueRegister = this.registers[futureValueRegisterIndex].machineName;
-    const futureValue = Number(futureValueRegister);
+    const futureValue = Number((document.getElementById(futureValueRegister) as HTMLInputElement).value);
 
     const periodsRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[3].trim().toUpperCase());
     const periodsRegister = this.registers[periodsRegisterIndex].machineName;
-    const periods = Number(periodsRegister);
+    const periods = Number((document.getElementById(periodsRegister) as HTMLInputElement).value);
 
     const interestRateRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[4].trim().toUpperCase());
     const interestRateRegister = this.registers[interestRateRegisterIndex].machineName;
-    const interestRate = Number(interestRateRegister);
+    const interestRate = Number((document.getElementById(interestRateRegister) as HTMLInputElement).value) / 100;
 
     const startingPrincipal = futureValue / Math.pow((1 + interestRate), periods);
     (document.getElementById(storageRegister) as HTMLInputElement).value = startingPrincipal.toFixed(2);
+  }
+
+  paymentsImmediate(parsedInstruction: Array<string>) {
+    const storageRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[1].trim().toUpperCase());
+    const storageRegister = this.registers[storageRegisterIndex].machineName;
+
+    const futureValue = Number(parsedInstruction[2]);
+
+    const periods = Number(parsedInstruction[3]);
+
+    const interestRate = Number(parsedInstruction[4]) / 100;
+
+    const payments = futureValue / ((Math.pow((1 + interestRate), periods) - 1) / (interestRate * Math.pow((1 + interestRate), periods)));
+    (document.getElementById(storageRegister) as HTMLInputElement).value = payments.toFixed(2);
+  }
+
+  paymentsRegister(parsedInstruction: Array<string>) {
+    const storageRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[1].trim().toUpperCase());
+    const storageRegister = this.registers[storageRegisterIndex].machineName;
+
+    const futureValueRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[2].trim().toUpperCase());
+    const futureValueRegister = this.registers[futureValueRegisterIndex].machineName;
+    const futureValue = Number((document.getElementById(futureValueRegister) as HTMLInputElement).value);
+
+    const periodsRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[3].trim().toUpperCase());
+    const periodsRegister = this.registers[periodsRegisterIndex].machineName;
+    const periods = Number((document.getElementById(periodsRegister) as HTMLInputElement).value);
+
+    const interestRateRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[4].trim().toUpperCase());
+    const interestRateRegister = this.registers[interestRateRegisterIndex].machineName;
+    const interestRate = Number((document.getElementById(interestRateRegister) as HTMLInputElement).value) / 100;
+
+    const payments = futureValue / ((Math.pow((1 + interestRate), periods) - 1) / (interestRate * Math.pow((1 + interestRate), periods)));
+    (document.getElementById(storageRegister) as HTMLInputElement).value = payments.toFixed(2);
   }
 }

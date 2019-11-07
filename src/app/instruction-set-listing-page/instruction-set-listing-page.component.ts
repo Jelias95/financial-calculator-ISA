@@ -33,28 +33,16 @@ export class InstructionSetListingPageComponent implements OnInit {
         opcode: this.generateOpcode('FVI')
       },
       {
-        command: 'PMTRB',
-        description: 'Calculate number of payments at beginning of period to achieve future value using registers',
-        example: 'PMTRB, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTRB')
+        command: 'PMTR',
+        description: 'Calculate amount of payments to pay off future value using registers',
+        example: 'PMTR, storage register, future value, # of periods, interest per period;',
+        opcode: this.generateOpcode('PMTR')
       },
       {
-        command: 'PMTIB',
-        description: 'Calculate number of payments at beginning of period to achieve future value using immediate values',
-        example: 'PMTIB, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTIB')
-      },
-      {
-        command: 'PMTRE',
-        description: 'Calculate number of payments at end of period to achieve future value using registers',
-        example: 'PMTRE, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTRE')
-      },
-      {
-        command: 'PMTIE',
-        description: 'Calculate number of payments at end of period to achieve future value using immediate values',
-        example: 'PMTIE, storage register, future value, # of periods, starting principal, interest per period;',
-        opcode: this.generateOpcode('PMTIE')
+        command: 'PMTI',
+        description: 'Calculate amount of payments to pay off future value using immediate values',
+        example: 'PMTI, storage register, future value, # of periods, interest per period;',
+        opcode: this.generateOpcode('PMTI')
       },
       {
         command: 'IPPR',
