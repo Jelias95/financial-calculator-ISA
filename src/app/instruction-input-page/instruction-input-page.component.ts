@@ -170,8 +170,8 @@ export class InstructionInputPageComponent implements OnInit {
           const machineNameIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[i].trim().toUpperCase());
           this.machineInstructionDisplay = this.machineInstructionDisplay + this.registers[machineNameIndex].machineName;
         } else {
-        this.machineInstructionDisplay =
-          this.machineInstructionDisplay + this.convertDecimalToHex(parseInt(parsedInstruction[i].trim(), 10));
+          this.machineInstructionDisplay =
+            this.machineInstructionDisplay + this.convertDecimalToHex(parseInt(parsedInstruction[i].trim(), 10));
         }
         if (i < parsedInstruction.length - 1) {
           this.machineInstructionDisplay = this.machineInstructionDisplay + ', ';
@@ -228,7 +228,7 @@ export class InstructionInputPageComponent implements OnInit {
           break;
         }
         case 'SV': {
-          console.log('SV');
+          this.storeValue(parsedInstruction);
           break;
         }
         default: {
@@ -239,7 +239,21 @@ export class InstructionInputPageComponent implements OnInit {
     }
   }
 
-  futureValueImmediate(parsedInstruction: Array<string>) { }
+  storeValue(parsedInstruction: Array<string>) {
+    const storageRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[1].trim().toUpperCase());
+    const storageRegister = this.registers[storageRegisterIndex].machineName;
+    (document.getElementById(storageRegister) as HTMLInputElement).value = parsedInstruction[2];
+  }
+
+  futureValueImmediate(parsedInstruction: Array<string>) {
+    const storageRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[1].trim().toUpperCase());
+    const storageRegister = this.registers[storageRegisterIndex].machineName;
+    const periods = Number(parsedInstruction[2]);
+    const startingPrincipal = Number(parsedInstruction[3]);
+    const interestRate = Number(parsedInstruction[4]) / 100;
+    const futureValue = startingPrincipal * (1 + (interestRate * periods));
+    (document.getElementById(storageRegister) as HTMLInputElement).value = String(futureValue);
+  }
 
   futureValueWithRegister(parsedInstruction: Array<string>) { }
 }
