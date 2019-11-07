@@ -200,7 +200,7 @@ export class InstructionInputPageComponent implements OnInit {
           break;
         }
         case 'IPPR': {
-          console.log('IPPR');
+          this.interestRatePerPeriodRegister(parsedInstruction);
           break;
         }
         case 'NPI': {
@@ -311,5 +311,39 @@ export class InstructionInputPageComponent implements OnInit {
 
     const interestRatePerPeriod = (Math.pow((futureValue / startingPrincipal), (1 / periods)) - 1) * 100;
     (document.getElementById(storageRegister) as HTMLInputElement).value = interestRatePerPeriod.toFixed(2);
+  }
+
+  numberOfPeriodsImmediate(parsedInstruction: Array<string>) {
+    const storageRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[1].trim().toUpperCase());
+    const storageRegister = this.registers[storageRegisterIndex].machineName;
+
+    const futureValue = Number(parsedInstruction[2]);
+
+    const startingPrincipal = Number(parsedInstruction[3]);
+
+    const interestRate = Number(parsedInstruction[4]) / 100;
+
+    const numberOfPeriods = Math.log(futureValue / startingPrincipal) / Math.log(interestRate);
+    (document.getElementById(storageRegister) as HTMLInputElement).value = numberOfPeriods.toFixed(2);
+  }
+
+  numberOfPeriodsRegister(parsedInstruction: Array<string>) {
+    const storageRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[1].trim().toUpperCase());
+    const storageRegister = this.registers[storageRegisterIndex].machineName;
+
+    const futureValueRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[2].trim().toUpperCase());
+    const futureValueRegister = this.registers[futureValueRegisterIndex].machineName;
+    const futureValue = Number(futureValueRegister);
+
+    const startingPrincipalRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[3].trim().toUpperCase());
+    const startingPrincipalRegister = this.registers[startingPrincipalRegisterIndex].machineName;
+    const startingPrincipal = Number(startingPrincipalRegister);
+
+    const interestRateRegisterIndex = this.registers.map((reg) => reg.displayName).indexOf(parsedInstruction[4].trim().toUpperCase());
+    const interestRateRegister = this.registers[interestRateRegisterIndex].machineName;
+    const interestRate = Number(interestRateRegister);
+
+    const numberOfPeriods = Math.log(futureValue / startingPrincipal) / Math.log(interestRate);
+    (document.getElementById(storageRegister) as HTMLInputElement).value = numberOfPeriods.toFixed(2);
   }
 }
